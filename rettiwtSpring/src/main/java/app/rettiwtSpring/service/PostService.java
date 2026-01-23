@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import app.rettiwtSpring.config.UserNotFoundException;
 import app.rettiwtSpring.model.Post;
 import app.rettiwtSpring.model.User;
 import app.rettiwtSpring.repository.PostRepository;
@@ -20,8 +21,8 @@ public class PostService {
         return postRepository.findAllPostsFeed();
     }
     public List<Post> getPostsByUsername(String username){
-        User user = (User) userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(username));
         return postRepository.findByUserOrderByCreatedAtDesc(user);
     }
     public List<Post> getPostsWithMedia(){

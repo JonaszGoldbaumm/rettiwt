@@ -16,11 +16,11 @@ public interface LikeRepository extends JpaRepository<Like, LikeId>{
     @Query("SELECT l FROM Like l WHERE l.post.id = :postId")
     List<Like> findByPostIdPost(Long postId);
 
-    @Query("SELECT COUNT(l) > 0 FROM Like l WHERE l.post.id = :postId AND l.user.id = :userId")
-    boolean existsByPostIdPostAndUserIdUser(Long postId, Long userId);
+    @Query("SELECT COUNT(1) > 0 FROM Like l WHERE l.post.id = :postId AND l.user.id = :userId")
+    boolean existsByPostIdAndUserId(Long postId, Long userId);
 
     @Query("SELECT COUNT(l) FROM Like l WHERE l.post.id = :postId")
-    long countByPostIdPost(Long postId);
+    long countByPostId(Long postId);
 
     @Query("DELETE FROM Like l WHERE l.post.id = :postId AND l.user.id = :userId")
     @Modifying
