@@ -13,7 +13,7 @@ import jakarta.transaction.Transactional;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, LikeId>{
-    @Query("SELECT l FROM Like l WHERE 1.post.id = :postId")
+    @Query("SELECT l FROM Like l WHERE l.post.id = :postId")
     List<Like> findByPostIdPost(Long postId);
 
     @Query("SELECT COUNT(l) > 0 FROM Like l WHERE l.post.id = :postId AND l.user.id = :userId")

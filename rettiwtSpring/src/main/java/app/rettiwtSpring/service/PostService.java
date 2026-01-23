@@ -2,10 +2,10 @@ package app.rettiwtSpring.service;
 
 import java.util.List;
 
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import app.rettiwtSpring.model.Post;
+import app.rettiwtSpring.model.User;
 import app.rettiwtSpring.repository.PostRepository;
 import app.rettiwtSpring.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

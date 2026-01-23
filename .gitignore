@@ -1,13 +1,13 @@
-rettwitPython/.prjvenv
-rettwitPython/.env
-rettwitPython/__pycache__/
-rettwitPython/**/*.pyc
-rettwitPython/.pytest_cache/
-rettwitPython/.mypy_cache/
+rettiwtPython/.*venv
+rettiwtPython/.env
+rettiwtPython/__pycache__/
+rettiwtPython/**/*.pyc
+rettiwtPython/.pytest_cache/
+rettiwtPython/.mypy_cache/
 
-rettwitPython/alembic/versions/*.pyc
+rettiwtPython/alembic/versions/*.pyc
 
-rettwitPython/*.log
+rettiwtPython/*.log
 
 .vscode/*
 !.vscode/extensions.json
