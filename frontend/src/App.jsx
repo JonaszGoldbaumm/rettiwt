@@ -3,8 +3,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import PostDetail from './pages/PostDetail';
-import Profile from './pages/Profile';
+// import PostDetail from './pages/PostDetail';
+// import Profile from './pages/Profile';
 
 const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
@@ -36,8 +36,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/post/:postId" element={<PostDetail />} />
-            <Route path="/profile/:userId" element={<Profile />} />
+            {/* <Route path="/post/:postId" element={<PostDetail />} />
+            <Route path="/profile/:userId" element={<Profile />} /> */}
           </Routes>
         </main>
       </Router>

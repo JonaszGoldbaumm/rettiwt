@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from app.repositories import post_repo, followed_repo
 
+
 def get_feed(db:Session):
     return post_repo.get_global_feed(db)
 

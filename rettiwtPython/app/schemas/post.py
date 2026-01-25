@@ -5,7 +5,6 @@ from app.schemas.user import UserSummary
 
 class PostBase(BaseModel):
     text:str
-    media: Optional[bytes]=None
 
 class PostOut(BaseModel):
     id: int
@@ -13,6 +12,7 @@ class PostOut(BaseModel):
     media: Optional[bytes]
     created_at: datetime
     user:UserSummary
+    like_count: int
 
     class Config:
         orm_mode= True
