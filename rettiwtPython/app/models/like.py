@@ -1,19 +1,14 @@
-from sqlalchemy import Column, Integer, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
-from sqlalchemy.schema import PrimaryKeyConstraint
+from sqlalchemy import ForeignKey, DateTime
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from app.db.base import Base
 
 class Like(Base):
     __tablename__ = "likes"
 
-    post_id = Column(Integer, ForeignKey("posts.id"))
-    user_id = Column(Integer, ForeignKey("users.id"))
-    created_at = Column(DateTime, default=datetime.utcnow)
+    post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
-    __table_args__ = (
-        PrimaryKeyConstraint("post_id", "user_id"),
-    )
-
-    post = relationship("Post")
-    user = relationship("User")
+    post: Mapped["Post"] = relationship()  # type: ignore # noqa: F821
+    user: Mapped["User"] = relationship()  # type: ignore # noqa: F821

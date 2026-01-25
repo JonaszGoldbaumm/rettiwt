@@ -37,4 +37,5 @@ public class ProfileService {
 
         return new UserProfileDto(userId, user.getUsername(), user.getEmail(), user.getProfilePic(), user.getDescription(), followerscnt, followedcnt, followers, followed);
     }
+
 }

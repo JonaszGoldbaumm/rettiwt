@@ -1,16 +1,18 @@
-from sqlalchemy import Column, Integer, Text, LargeBinary, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy import Text, LargeBinary, ForeignKey, DateTime
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
+from typing import List, Optional
 from app.db.base import Base
+
 
 class Post(Base):
     __tablename__ = "posts"
 
-    id = Column(Integer, primary_key=True, index=True)
-    text = Column(Text, nullable=False)
-    media = Column(LargeBinary)
-    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    media: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
-    user = relationship("User", back_populates="posts")
-    comments = relationship("Comment", back_populates="post")
+    user: Mapped["User"] = relationship(back_populates="posts")  # type: ignore # noqa: F821
+    comments: Mapped[List["Comment"]] = relationship(back_populates="post")  # type: ignore # noqa: F821
