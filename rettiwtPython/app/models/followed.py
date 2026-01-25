@@ -6,8 +6,8 @@ from app.db.base import Base
 class Followed(Base):
     __tablename__ = "followed"
 
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
-    by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True, name="id_user")
+    by_user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True, name="by_user")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     user: Mapped["User"] = relationship(foreign_keys=[user_id])  # type: ignore # noqa: F821

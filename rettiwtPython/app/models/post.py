@@ -11,7 +11,7 @@ class Post(Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     text: Mapped[str] = mapped_column(Text, nullable=False)
     media: Mapped[Optional[bytes]] = mapped_column(LargeBinary)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, name="id_user")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     user: Mapped["User"] = relationship(back_populates="posts")  # type: ignore # noqa: F821

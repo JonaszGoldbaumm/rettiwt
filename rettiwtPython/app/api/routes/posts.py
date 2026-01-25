@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
 from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.api.deps import get_current_user
@@ -10,9 +10,18 @@ from app.repositories import post_repo, comment_repo
 router = APIRouter(prefix="/post", tags=["post"])
 
 @router.post("/", response_model=PostOut)
-def create_post(data:PostCreate, db:Session = Depends(get_db), curr_user=Depends(get_current_user)):
-    post= post_interaction_service.create_post(db, user_id=curr_user.id, text=data.text, media=data.media)
-
+async def create_post(
+    text: str,
+    media: UploadFile | None = File(default=None),
+    db: Session = Depends(get_db),
+    curr_user=Depends(get_current_user),
+):
+    media_bytes: bytes | None = None
+    if media:
+        if media.content_type not in ["image/jpeg", "image/png", "image/webp"]:
+            raise HTTPException(status_code=400, detail="Invalid image type")
+        media_bytes = await media.read()
+    post = post_interaction_service.create_post(db, user_id=curr_user.id, text=text, media=media_bytes)
     return post
 
 @router.get("/{post_id}", response_model=PostDetailsOut)

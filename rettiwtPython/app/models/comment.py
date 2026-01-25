@@ -8,8 +8,8 @@ class Comment(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
     text: Mapped[str] = mapped_column(Text, nullable=False)
-    post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"), nullable=False)
-    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+    post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"), nullable=False, name="id_post")
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, name="id_user")
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
 
     post: Mapped["Post"] = relationship(back_populates="comments") # type: ignore  # noqa: F821

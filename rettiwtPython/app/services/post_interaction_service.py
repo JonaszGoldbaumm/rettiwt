@@ -30,7 +30,7 @@ def like_post(db:Session, post_id: int, user_id:int):
     if not user:
         raise ValueError("User not found")
     
-    like = Like(post_id, user_id)
+    like = Like(post_id=post_id, user_id=user_id)
     like_repo.create_like(db, like)
 
 def unlike_post(db:Session, post_id: int, user_id: int):
@@ -48,7 +48,7 @@ def create_comment(db:Session, user_id:int, post_id:int, text:str):
     if not user:
         raise ValueError("User not found")
     
-    comment = Comment(text, post_id, user_id)
+    comment = Comment(text=text, post_id=post_id,user_id= user_id)
     comment_repo.create_comment(db, comment)
 
 def delete_comment(db:Session, comment_id: int):
