@@ -4,6 +4,11 @@ from datetime import datetime
 from app.db.base import Base
 
 class Like(Base):
+    """
+    Class representing DB Like table.
+    Relationship between the liked post and author of the like.
+    Contains mappings for its 'author' and the directed post foreign key relationships.
+    """
     __tablename__ = "likes"
 
     post_id: Mapped[int] = mapped_column(ForeignKey("posts.id"), primary_key=True, name="id_post")

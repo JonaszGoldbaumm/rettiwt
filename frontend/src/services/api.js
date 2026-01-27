@@ -1,20 +1,24 @@
-const BASE_URL = 'http://localhost:8080'; 
+const BASE_URL = 'http://localhost:8080';
 
 export const apiFetch = async (endpoint, options = {}, token = null) => {
-  const headers = {
-    'Content-Type': 'application/json',
-    ...options.headers,
-  };
+  const headers = { ...options.headers };
 
-  if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+
+  if (!(options.body instanceof FormData)) {
+    headers['Content-Type'] = 'application/json';
   }
 
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
   const response = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers });
-  
+
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Something went wrong');
+    let errorMsg = 'Request failed';
+    try {
+      const error = await response.json();
+      errorMsg = error.detail || error.message || errorMsg;
+    } catch {}
+    throw new Error(errorMsg);
   }
 
   return response.json();

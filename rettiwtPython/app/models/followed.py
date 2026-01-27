@@ -4,6 +4,11 @@ from datetime import datetime
 from app.db.base import Base
 
 class Followed(Base):
+    """
+    Class representing DB Followed table.
+    Relationship between the follower and followed.
+    Contains mappings for the foreign keys for both the author and the target.
+    """
     __tablename__ = "followed"
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), primary_key=True, name="id_user")

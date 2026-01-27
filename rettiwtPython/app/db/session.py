@@ -13,6 +13,9 @@ engine = create_engine(
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def get_db():
+    """
+    Function responsible for db calls in the whole API
+    """
     db=SessionLocal()
     try:
         yield db

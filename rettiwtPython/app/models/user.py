@@ -5,6 +5,11 @@ from typing import List, Optional
 from app.db.base import Base
 
 class User(Base):
+    """
+    Class representing DB User table.
+    Users of the application with optional descriptions and profile pictures.
+    Contains mapping for the constraint on the post.
+    """
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)

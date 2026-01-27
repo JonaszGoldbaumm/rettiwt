@@ -4,6 +4,11 @@ from datetime import datetime
 from app.db.base import Base
 
 class Comment(Base):
+    """
+    Class representing DB Comment table.
+    Contents of the comment + author + directed post.
+    Contains foreign keys for the post comments are on and the author of the comment.
+    """
     __tablename__ = "comments"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)

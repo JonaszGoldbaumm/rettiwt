@@ -5,6 +5,7 @@ const CreatePost = ({ onPostCreated }) => {
   const { token, isAuthenticated } = useAuth();
   const [text, setText] = useState('');
   const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
   if (!isAuthenticated) return null;
@@ -14,98 +15,59 @@ const CreatePost = ({ onPostCreated }) => {
     setLoading(true);
 
     const formData = new FormData();
-    
-    formData.append('text', text); 
-    if (file) {
-      formData.append('media', file);
-    }
+    formData.append('text', text);
+    if (file) formData.append('media', file);
 
     try {
-      const response = await fetch('http://localhost:8000/post/', {
+      const res = await fetch('http://localhost:8080/post/', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
-      if (response.ok) {
-        setText('');
-        setFile(null);
-        e.target.reset(); 
-        
-        if (onPostCreated) onPostCreated();
-      } else {
-        const err = await response.json();
-        throw new Error(err.detail || 'Failed to create post');
-      }
+      if (!res.ok) throw new Error('Post failed');
+
+      setText('');
+      setFile(null);
+      setPreview(null);
+      onPostCreated?.();
     } catch (err) {
-      alert(`Error: ${err.message}`);
+      alert(err.message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section className="create-post-box" style={styles.container}>
+    <div className="card p-3 mb-4 shadow-sm w-100 w-md-75 w-lg-50 mx-auto">
       <form onSubmit={handleSubmit}>
-        <textarea 
-          placeholder="What's on your mind?" 
-          value={text} 
+        <textarea
+          className="form-control mb-2"
+          placeholder="What's on your mind?"
+          value={text}
+          onChange={e => setText(e.target.value)}
           required
-          onChange={(e) => setText(e.target.value)}
-          style={styles.textarea}
         />
-        <div style={styles.actions}>
-          <input 
-            type="file" 
-            accept="image/jpeg,image/png" 
-            onChange={(e) => setFile(e.target.files[0])}
-            style={styles.fileInput}
+        {preview && <img src={preview} className="img-fluid rounded mb-2" alt="Preview" />}
+        <div className="d-flex justify-content-between align-items-center">
+          <input
+            type="file"
+            accept="image/*"
+            className="form-control form-control-sm w-50"
+            onChange={e => {
+              const f = e.target.files[0];
+              setFile(f);
+              setPreview(URL.createObjectURL(f));
+            }}
           />
-          <button type="submit" disabled={loading || !text.trim()} style={styles.button}>
-            {loading ? 'Sending...' : 'Post'}
+          <button className="btn btn-primary" disabled={loading || !text.trim()}>
+            {loading ? 'Posting...' : 'Post'}
           </button>
         </div>
       </form>
-    </section>
-  );
-};
+    </div>
 
-const styles = {
-  container: {
-    padding: '1rem',
-    border: '1px solid #e1e8ed',
-    borderRadius: '12px',
-    backgroundColor: '#fff',
-    marginBottom: '20px'
-  },
-  textarea: {
-    width: '100%',
-    border: 'none',
-    resize: 'none',
-    fontSize: '1.2rem',
-    outline: 'none',
-    minHeight: '60px',
-    fontFamily: 'inherit'
-  },
-  actions: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: '10px',
-    borderTop: '1px solid #f0f0f0',
-    paddingTop: '10px'
-  },
-  button: {
-    backgroundColor: '#1da1f2',
-    color: 'white',
-    border: 'none',
-    padding: '8px 16px',
-    borderRadius: '20px',
-    fontWeight: 'bold',
-    cursor: 'pointer'
-  }
+  );
 };
 
 export default CreatePost;

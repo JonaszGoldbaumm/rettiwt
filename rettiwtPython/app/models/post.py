@@ -6,6 +6,11 @@ from app.db.base import Base
 
 
 class Post(Base):
+    """
+    Class representing DB Post table.
+    Posts with optional photos. Autogenerates timestamp at creation.
+    Contains Mappings for its comments and the author foreign key relationships.
+    """
     __tablename__ = "posts"
 
     id: Mapped[int] = mapped_column(primary_key=True, index=True)

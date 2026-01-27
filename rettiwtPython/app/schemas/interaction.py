@@ -1,15 +1,20 @@
+from datetime import datetime
 from pydantic import BaseModel
 from typing import List
 from app.schemas.comment import CommentOut
+from app.schemas.user import UserSummary
 
-class PostDetailsOut(BaseModel):
-    post_id: int
-    like_count: int
-    liked_by_user: bool
-    comments: List[CommentOut]
+
+
 
 class LikeActionOut(BaseModel):
+    """
+    Schema for the liking response(if it's a success or not)
+    """
     success:bool
 
 class CommentCreate(BaseModel):
+    """
+    Schema for comment creation request.
+    """
     text:str

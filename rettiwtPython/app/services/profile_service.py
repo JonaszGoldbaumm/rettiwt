@@ -1,7 +1,37 @@
 from sqlalchemy.orm import Session
 from app.repositories import user_repo, followed_repo
 
+def get_user_info(db:Session, user_id:int):
+    """
+    Returns basic user account information.
+
+    :param db: Database session
+    :type db: Session
+    :param user_id: ID of the user
+    :type user_id: int
+    :raises ValueError: If user does not exist
+    """
+    user= user_repo.get_by_id(db,user_id)
+    if not user:
+        raise ValueError("User not found")
+    return {
+        "username": user.username,
+        "email":user.email,
+        "profile_pic":user.profile_pic
+    }
+
 def get_user_profile(db:Session, user_id:int):
+    """
+    Returns full user profile including followers and followed users.
+
+    :param db: Database session
+    :type db: Session
+    :param user_id: ID of the user
+    :type user_id: int
+    :raises ValueError: If user does not exist
+    :return: Profile data with counts and user lists
+    :rtype: dict
+    """
     user= user_repo.get_by_id(db, user_id)
     if not user:
         raise ValueError("User not found")
