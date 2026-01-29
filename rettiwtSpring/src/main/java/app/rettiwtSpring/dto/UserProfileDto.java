@@ -11,10 +11,12 @@ public class UserProfileDto {
     private Long id;
     private String username;
     private String email;
-    private byte[] profilePic;
     private String description;
-    private long followerCount;
-    private long followedCount;
+
+    private int followers_count;
+    private int followed_count;
+
     private List<UserSummaryDto> followers;
     private List<UserSummaryDto> followed;
+    
 }

@@ -20,10 +20,11 @@ public interface LikeRepository extends JpaRepository<Like, LikeId>{
     boolean existsByPostIdAndUserId(Long postId, Long userId);
 
     @Query("SELECT COUNT(l) FROM Like l WHERE l.post.id = :postId")
-    long countByPostId(Long postId);
+    int countByPostId(Long postId);
 
     @Query("DELETE FROM Like l WHERE l.post.id = :postId AND l.user.id = :userId")
     @Modifying
     @Transactional
     void deleteByPostIdAndUserId(Long postId, Long userId);
+
 }

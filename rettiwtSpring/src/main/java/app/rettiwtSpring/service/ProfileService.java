@@ -25,8 +25,6 @@ public class ProfileService {
         List<Followed> followerLinks = followedRepository.findByUser(user);
         List<Followed> followedLinks = followedRepository.findByFollowedBy(user);
 
-        long followerscnt = followerLinks.size();
-        long followedcnt = followedLinks.size();
 
         List<UserSummaryDto> followers = followerLinks.stream()
             .map(f -> new UserSummaryDto(f.getFollowedBy().getId(), f.getFollowedBy().getUsername()))
@@ -35,7 +33,7 @@ public class ProfileService {
             .map(f-> new UserSummaryDto(f.getUser().getId(), f.getUser().getUsername()))
             .toList();
 
-        return new UserProfileDto(userId, user.getUsername(), user.getEmail(), user.getProfilePic(), user.getDescription(), followerscnt, followedcnt, followers, followed);
+        return new UserProfileDto(userId, user.getUsername(), user.getEmail(), user.getDescription(), followers.size(), followed.size(), followers, followed);
     }
 
 }

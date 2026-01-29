@@ -1,16 +1,22 @@
 package app.rettiwtSpring.dto;
 
+import java.time.Instant;
 import java.util.List;
 
-import app.rettiwtSpring.model.Comment;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class PostDetailsDto {
-    private Long postId;
-    private Long likeCount;
-    private boolean likedByCurrentUser;
-    private List<Comment> comments;
+    private Long id;
+    private String text;
+    private Instant created_at;
+    private UserSummaryDto author;
+    private int like_count;
+    private boolean liked_by_user;
+    private List<CommentDto> comments;
 }

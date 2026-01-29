@@ -38,6 +38,7 @@ public class PostInteractionService {
 
     public void likePost(Long postId, Long userId){
         if (likeRepository.existsByPostIdAndUserId(postId, userId)){
+            likeRepository.deleteByPostIdAndUserId(postId, userId);
             return;
         }
 
@@ -47,12 +48,12 @@ public class PostInteractionService {
         likeRepository.save(like); 
     }
 
-    public void unlikePost(Long postId, Long userId){
-        if(!likeRepository.existsByPostIdAndUserId(postId, userId)){
-            return;
-        }
-        likeRepository.deleteByPostIdAndUserId(postId, userId);
-    }
+    // public void unlikePost(Long postId, Long userId){
+    //     if(!likeRepository.existsByPostIdAndUserId(postId, userId)){
+    //         return;
+    //     }
+    //     likeRepository.deleteByPostIdAndUserId(postId, userId);
+    // }
 
     public void createComment(Long userId, Long postId, String text){
         Post post = postRepository.findById(postId).orElseThrow(()->new PostNotFoundException(postId.toString()));

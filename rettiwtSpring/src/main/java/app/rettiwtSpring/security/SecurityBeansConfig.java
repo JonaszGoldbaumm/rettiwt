@@ -1,4 +1,4 @@
-package app.rettiwtSpring.config;
+package app.rettiwtSpring.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
