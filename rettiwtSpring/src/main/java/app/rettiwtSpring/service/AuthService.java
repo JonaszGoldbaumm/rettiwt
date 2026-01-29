@@ -28,7 +28,7 @@ public class AuthService {
             throw new RuntimeException("Email already in use");
         }
         User user = new User();
-        user.setUsername(request.getUsername());
+        user.setUsername(request.getUsername().trim());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 

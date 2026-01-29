@@ -57,7 +57,7 @@ public class PostController {
             mediaBytes = media.getBytes();
         }
 
-        interactionService.createPost(currUser.getId(), text, mediaBytes);
+        interactionService.createPost(currUser.getId(), text.trim(), mediaBytes);
         return ResponseEntity.status(HttpStatus.CREATED).body(new LikeActionDto(true));
     }
     @GetMapping("/{postId}")
@@ -96,7 +96,7 @@ public class PostController {
             @RequestBody CommentCreate data, 
             @AuthenticationPrincipal User currUser) {
         
-        interactionService.createComment(currUser.getId(), postId, data.getText());
+        interactionService.createComment(currUser.getId(), postId, data.getText().trim());
         return ResponseEntity.ok(new LikeActionDto(true));
     }
 

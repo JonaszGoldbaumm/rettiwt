@@ -76,7 +76,7 @@ public class ProfileController {
         if (userRepository.existsByUsername(data.getNew_username())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Username already taken");
         }
-        User updated = userService.updateUsername(user.getId(), data.getNew_username());
+        User updated = userService.updateUsername(user.getId(), data.getNew_username().trim());
         return ResponseEntity.ok(Map.of(
             "message", "Username updated",
             "username", updated.getUsername()
