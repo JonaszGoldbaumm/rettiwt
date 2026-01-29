@@ -31,17 +31,22 @@ public class SecurityConfig {
             .exceptionHandling(ex -> ex.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/swagger-ui/**")
+                    .permitAll()
+                    .requestMatchers("/v3/api-docs*/**")
+                    .permitAll()
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 // 1. Auth Endpoints
                 .requestMatchers("/login", "/register").permitAll()
 
                 // 2. Feed Endpoints
                 // Specific restricted feeds MUST come before general permitAll
                 .requestMatchers("/feed/media", "/feed/followed").authenticated()
-                .requestMatchers(HttpMethod.GET, "/feed/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/feed/", "/feed", "/feed/**").permitAll()
 
                 // 3. Post Endpoints
                 // Creation, Liking, Commenting, and Deletion require auth
-                .requestMatchers(HttpMethod.POST, "/post/**").authenticated()
+                .requestMatchers(HttpMethod.POST, "/post","/post/**").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/post/**").authenticated()
                 // Getting post details or post media is public
                 .requestMatchers(HttpMethod.GET, "/post/**").permitAll()
@@ -64,10 +69,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http//localhost:3000", "http://127.0.0.1:3000", "http://localhost:5173", "http://127.0.0.1:5173"));
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5173", "http://127.0.0.1:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         
-        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "Accept"));
         
         configuration.setAllowCredentials(true); 
 
@@ -80,4 +85,6 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
         return config.getAuthenticationManager();
     }
+
+    
 }

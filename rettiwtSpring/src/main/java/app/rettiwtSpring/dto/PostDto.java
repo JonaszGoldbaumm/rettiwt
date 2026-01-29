@@ -14,4 +14,6 @@ public class PostDto {
     private UserSummaryDto user;
     private int like_count;
     private int comment_count;
+    private boolean liked_by_user;
+    private boolean has_media;
 }

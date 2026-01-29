@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, BrowserRouter } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -8,17 +8,37 @@ import ProfilePage from './pages/Profile';
 import ProfileEdit from './pages/EditProfile';
 import './bootstrap/css/bootstrap.min.css';
 import './bootstrap/js/bootstrap.bundle.min.js';
+import { ToastProvider } from './context/ToastContext.jsx';
+import { Navigate, useLocation } from 'react-router-dom';
+import NotFound from './pages/NotFound.jsx';
+import { ThemeProvider, useTheme } from './context/ThemeContext.jsx';
+
+const publicRoutes = ["/", "/login", "/register", "/profile", "/post"]
+
+const ProtectedRoute = ({children}) => {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  if(!isAuthenticated){
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+  return children;
+}
 
 const Navbar = () => {
   const { isAuthenticated, user, logout } = useAuth();
-
+  const { theme, toggleTheme } = useTheme();
   return (
     <nav
       className="navbar navbar-dark shadow-sm"
       style={{ backgroundColor: '#0d6efd', position: 'sticky', top: 0, zIndex: 1000 }}
     >
+      
       <div className="container-fluid d-flex justify-content-around" style={{width:'100vm'}}>
         <Link to="/" className="btn btn-outline-light">Home</Link>
+        <button className="btn" onClick={toggleTheme}>
+          {theme === "light" ? "☀️" : "🌙"}
+        </button>
         {isAuthenticated ? (
           <>
             <Link to={`/profile/${user?.id}`} className="btn btn-outline-light">Profile</Link>
@@ -37,7 +57,9 @@ const Navbar = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
+ <ThemeProvider>
+    <ToastProvider>
+<AuthProvider>
   <Router>
     <Navbar />   {/* Navbar itself handles full width */}
     <div style={{ width: '100vw', display: 'flex', justifyContent: 'center' }}>
@@ -48,11 +70,20 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/post/:postId" element={<PostDetail />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
-          <Route path="/profile/edit" element={<ProfileEdit />} />
+          <Route path="/profile/edit" element={<ProtectedRoute><ProfileEdit /></ProtectedRoute>} />
+        
+        
+        
+          <Route path='*' element={<NotFound />}/>
         </Routes>
       </main>
     </div>
   </Router>
+
 </AuthProvider>
+
+    </ToastProvider>
+    </ThemeProvider>
+    
   );
 }

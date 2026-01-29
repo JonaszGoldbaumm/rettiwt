@@ -28,42 +28,51 @@ public class FeedController {
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
 
-    private List<PostDto> mapToDtoList(List<Post> posts){
-        return posts.stream().map(post -> new PostDto(
-            post.getId(),
-            post.getText(),
-            post.getCreatedAt(),
-            new UserSummaryDto(post.getUser().getId(), post.getUser().getUsername()),
-            likeRepository.countByPostId(post.getId()),
-            commentRepository.findByPostIdWithUser(post.getId()).size()
-        )).toList();
+    private List<PostDto> mapToDtoList(List<Post> posts, User currUser) {
+        return posts.stream().map(post -> {
+            boolean liked = false;
+            if (currUser != null) {
+                liked = likeRepository.existsByPostIdAndUserId(post.getId(), currUser.getId());
+            }
+            boolean hasMedia = post.getMedia()!=null;
+            return new PostDto(
+                post.getId(),
+                post.getText(),
+                post.getCreatedAt(),
+                new UserSummaryDto(post.getUser().getId(), post.getUser().getUsername()),
+                likeRepository.countByPostId(post.getId()),
+                commentRepository.findByPostIdWithUser(post.getId()).size(),
+                liked,
+                hasMedia
+            );
+        }).toList();
     }
 
     @GetMapping
-    public ResponseEntity<FeedResponseDto> getGlobalFeed(){
+    public ResponseEntity<FeedResponseDto> getGlobalFeed(@AuthenticationPrincipal User currUser){
         List<Post> posts = postService.getGlobalFeed();
-        return ResponseEntity.ok(new FeedResponseDto(mapToDtoList(posts)));
+        return ResponseEntity.ok(new FeedResponseDto(mapToDtoList(posts, currUser)));
     }
     @GetMapping("/user/{userId}")
-    public ResponseEntity<FeedResponseDto> getUserPosts(@PathVariable Long userId) {
+    public ResponseEntity<FeedResponseDto> getUserPosts(@AuthenticationPrincipal User currUser, @PathVariable Long userId) {
         // Note: PostService currently has getPostsByUsername, 
         // you may need to add getPostsByUserId to your Service layer.
         List<Post> posts = postService.getGlobalFeed().stream()
                 .filter(p -> p.getUser().getId().equals(userId))
                 .toList();
-        return ResponseEntity.ok(new FeedResponseDto(mapToDtoList(posts)));
+        return ResponseEntity.ok(new FeedResponseDto(mapToDtoList(posts, currUser)));
     }
 
     @GetMapping("/media")
-    public ResponseEntity<FeedResponseDto> getMediaFeed() {
+    public ResponseEntity<FeedResponseDto> getMediaFeed(@AuthenticationPrincipal User currUser) {
         List<Post> posts = postService.getPostsWithMedia();
-        return ResponseEntity.ok(new FeedResponseDto(mapToDtoList(posts)));
+        return ResponseEntity.ok(new FeedResponseDto(mapToDtoList(posts, currUser)));
     }
 
     @GetMapping("/followed")
     public ResponseEntity<FeedResponseDto> getFollowedFeed(@AuthenticationPrincipal User currUser) {
         List<Post> posts = postService.getFeedFromFollowed(currUser.getId());
-        return ResponseEntity.ok(new FeedResponseDto(mapToDtoList(posts)));
+        return ResponseEntity.ok(new FeedResponseDto(mapToDtoList(posts, currUser)));
     }
     
 }

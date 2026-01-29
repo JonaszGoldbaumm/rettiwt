@@ -19,4 +19,5 @@ public class PostDetailsDto {
     private int like_count;
     private boolean liked_by_user;
     private List<CommentDto> comments;
+    private boolean has_media;
 }

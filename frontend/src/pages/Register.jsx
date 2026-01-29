@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { apiFetch } from '../services/api';
+import { useToast } from '../context/ToastContext';
 
 const Register = () => {
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,7 +19,7 @@ const Register = () => {
       });
       navigate('/login');
     } catch (err) {
-      alert(err.message);
+      showToast(err.message, "danger");
     } finally {
       setLoading(false);
     }

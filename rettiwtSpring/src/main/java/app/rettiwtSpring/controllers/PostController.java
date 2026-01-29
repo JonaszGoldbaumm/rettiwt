@@ -51,6 +51,9 @@ public class PostController {
             if (contentType == null || !List.of("image/jpeg", "image/png", "image/webp").contains(contentType)) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid image type");
             }
+            if(text.isEmpty()){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Post must contain text");
+            }
             mediaBytes = media.getBytes();
         }
 
@@ -63,6 +66,7 @@ public class PostController {
             @AuthenticationPrincipal User currUser) {
         
         Long userId = (currUser != null) ? currUser.getId() : null;
+        
         return ResponseEntity.ok(postDetailsService.getPostDetails(postId, userId));
     }
 

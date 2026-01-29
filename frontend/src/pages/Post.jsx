@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
+import { useToast } from '../context/ToastContext';
+import ProfilePic from '../components/ProfilePic';
+import { Link } from 'react-router-dom';
+import { useTheme } from '../context/ThemeContext';
 
 const PostDetail = () => {
   const { postId } = useParams();
@@ -10,6 +14,8 @@ const PostDetail = () => {
   const [details, setDetails] = useState(null);
   const [commentText, setCommentText] = useState('');
   const [loading, setLoading] = useState(true);
+  const { showToast } = useToast();
+  const { theme } = useTheme();
 
   const fetchDetails = async () => {
     try {
@@ -29,7 +35,7 @@ const PostDetail = () => {
       await apiFetch(`/post/${postId}/like`, { method: 'POST' }, token);
       fetchDetails();
     } catch {
-      alert("Action failed");
+      showToast("Action failed", "danger");
     }
   };
 
@@ -43,7 +49,7 @@ const PostDetail = () => {
       setCommentText('');
       fetchDetails();
     } catch {
-      alert("Comment failed");
+      showToast("Posting a comment failed", "danger");
     }
   };
 
@@ -53,7 +59,7 @@ const PostDetail = () => {
       await apiFetch(`/post/${postId}`, { method: 'DELETE' }, token);
       navigate('/');
     } catch {
-      alert("Delete failed");
+      showToast("Deleteing post failed", "danger");
     }
   };
 
@@ -63,7 +69,7 @@ const PostDetail = () => {
       await apiFetch(`/post/comments/${commentId}`, { method: 'DELETE' }, token);
       fetchDetails();
     } catch {
-      alert("Delete failed");
+      showToast("Deleteing comment failed", "danger");
     }
   };
 
@@ -76,24 +82,46 @@ const PostDetail = () => {
     <div className="container mt-4 mb-5">
       <div className="card shadow-sm mx-auto">
 
-        {/* Media */}
-        <div className="text-center bg-light border-bottom">
-          <img 
-            src={`http://localhost:8080/post/${postId}/media`} 
-            alt="Post content"
-            className="img-fluid"
-            style={{ maxWidth: '75vh', objectFit: 'contain' }}
-            onError={(e) => e.target.style.display = 'none'}
-          />
-        </div>
+        {/* media */}
+        {details.has_media && (
+          <div className="text-center border-bottom"
+            style={{
+              color: theme === "light" ? "#f8f9fa" : "#2c2c2c",
+              backgroundColor: theme === "light" ? "#f8f9fa" : "#2c2c2c",
+              padding: "1rem",
+            }}
+          >
+            <img 
+              src={`http://localhost:8080/post/${postId}/media`} 
+              alt="Post content"
+              className="img-fluid"
+              style={{
+                maxWidth: "75vh",
+                objectFit: "contain",
+                backgroundColor: theme === "light" ? "#f8f9fa" : "#2c2c2c",
+                display: "inline-block",
+              }}
+            />
+          </div>
+        )}
 
         <div className="card-body">
 
           <div className="d-flex justify-content-between align-items-start mb-2">
-            <div>
-              <strong>@{details.author.username}</strong>
-              <div className="text-muted small">
-                {new Date(details.created_at).toLocaleString()}
+            <div className="d-flex align-items-center">
+                <ProfilePic
+                  userId={details.author.id}
+                  profilePic={details.author.profile_pic}
+                  style={{ width: "40px", height: "40px" }}
+                />
+
+              <div className="ms-2">
+                <Link to={`/profile/${details.author.id}`} className="text-decoration-none">
+                  <strong>@{details.author.username}</strong>
+                </Link>
+                <div className="text-muted small">
+                  {new Date(details.created_at).toLocaleString()}
+                </div>
               </div>
             </div>
 
@@ -130,9 +158,18 @@ const PostDetail = () => {
               return (
                 <div key={c.id} className="border rounded p-2 mb-2">
                   <div className="d-flex justify-content-between">
-                    <div>
-                      <strong>{c.user.username}</strong>: {c.text}
-                      <div className="text-muted small">
+                    <div className='d-flex'>
+                        <ProfilePic
+                          userId={c.user.id}
+                          profilePic={c.user.profile_pic}
+                          style={{width: "32px", height: "32px"}}
+                        />
+                      <div className='ms-2'>
+                        <Link to={'/profile/${c.user.id}'} className='text-decoration-none'>
+                          <strong>@{c.user.username}</strong>
+                        </Link>: {c.text}
+                      </div>
+                      <div className="text-muted small m-1">
                         {new Date(c.created_at).toLocaleString()}
                       </div>
                     </div>

@@ -8,7 +8,6 @@ import app.rettiwtSpring.config.PostNotFoundException;
 import app.rettiwtSpring.dto.CommentDto;
 import app.rettiwtSpring.dto.PostDetailsDto;
 import app.rettiwtSpring.dto.UserSummaryDto;
-import app.rettiwtSpring.model.Comment;
 import app.rettiwtSpring.model.Post;
 import app.rettiwtSpring.repository.CommentRepository;
 import app.rettiwtSpring.repository.LikeRepository;
@@ -41,7 +40,8 @@ public class PostDetailsService {
             new UserSummaryDto(post.getUser().getId(), post.getUser().getUsername()),
             likeCnt,
             liked,
-            comments
+            comments,
+            post.getMedia() != null
         );
     }
 }

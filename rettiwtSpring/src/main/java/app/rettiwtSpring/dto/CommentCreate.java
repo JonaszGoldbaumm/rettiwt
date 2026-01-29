@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CommentCreate {
-    @NotBlank
+    @NotBlank(message="Comments must have text")
     private String text;
 }

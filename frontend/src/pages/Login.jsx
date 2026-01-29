@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
 import { useNavigate, Link } from 'react-router-dom';
+import { useToast } from '../context/ToastContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({ username_or_email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +22,7 @@ const Login = () => {
       login(data);
       navigate('/');
     } catch (err) {
-      alert(err.message);
+      showToast(err.message, "danger");
     } finally {
       setLoading(false);
     }

@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { apiFetch } from '../services/api';
+import { useToast } from '../context/ToastContext';
 
 const ProfileEdit = () => {
   const { token, user } = useAuth();
   const navigate = useNavigate();
-
+  const { showToast } = useToast();
   const [username, setUsername] = useState('');
   const [description, setDescription] = useState('');
   const [oldPassword, setOldPassword] = useState('');
@@ -20,10 +21,10 @@ const ProfileEdit = () => {
         method: 'PATCH',
         body: isFormData ? body : JSON.stringify(body)
       }, token);
-      alert('Update successful');
+      showToast("Update successful", "success");
       if (endpoint.includes('profile-pic')) setFile(null);
     } catch (err) {
-      alert(err.message);
+      showToast(err.message, "danger");
     }
   };
 

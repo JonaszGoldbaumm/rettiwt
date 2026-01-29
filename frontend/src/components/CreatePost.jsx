@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 
 const CreatePost = ({ onPostCreated }) => {
   const { token, isAuthenticated } = useAuth();
@@ -7,6 +8,7 @@ const CreatePost = ({ onPostCreated }) => {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { showToast } = useToast();
 
   if (!isAuthenticated) return null;
 
@@ -19,7 +21,7 @@ const CreatePost = ({ onPostCreated }) => {
     if (file) formData.append('media', file);
 
     try {
-      const res = await fetch('http://localhost:8080/post/', {
+      const res = await fetch('http://localhost:8080/post', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,
@@ -32,7 +34,7 @@ const CreatePost = ({ onPostCreated }) => {
       setPreview(null);
       onPostCreated?.();
     } catch (err) {
-      alert(err.message);
+      showToast(err.message, "danger");
     } finally {
       setLoading(false);
     }

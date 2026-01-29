@@ -13,7 +13,7 @@ const Home = () => {
   const fetchFeed = async (type = feedType) => {
     setLoading(true);
     try {
-      let endpoint = '/feed/';
+      let endpoint = '/feed';
       if (type === 'followed') endpoint = '/feed/followed';
       if (type === 'media') endpoint = '/feed/media';
       const data = await apiFetch(endpoint, {}, token);
@@ -36,7 +36,7 @@ const Home = () => {
   }, [feedType, token]);
 
   return (
-    <div className="d-flex flex-column align-items-center px-2">
+    <div className="d-flex flex-column align-items-center px-2 mt-4">
       {isAuthenticated && <CreatePost onPostCreated={() => fetchFeed()} />}
 
       {isAuthenticated && (
@@ -53,7 +53,7 @@ const Home = () => {
         <h3 className="text-center text-muted mt-5">No posts found</h3>
       ) : (
         posts.map(p => (
-          <div key={p.id} className="w-100 w-md-75 w-lg-50 mb-3">
+          <div key={p.id} className="w-100 w-md-75 w-lg-50 mb-1">
             <PostCard post={p} />
           </div>
         ))
