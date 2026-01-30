@@ -1,7 +1,6 @@
 package app.rettiwtSpring.security;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,7 +52,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 });
             }
         } catch (Exception e) {
-            // Log this if you need to debug, but keep silent to allow optional auth
+            
         }
 
         filterChain.doFilter(request, response);

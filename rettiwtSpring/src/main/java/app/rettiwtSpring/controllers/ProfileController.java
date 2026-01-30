@@ -42,20 +42,17 @@ public class ProfileController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // 1. Get User Profile
     @GetMapping("/{userId}")
     public ResponseEntity<UserProfileDto> getProfile(@PathVariable Long userId) {
         // ProfileService already handles the UserNotFoundException
         return ResponseEntity.ok(profileService.getUserProfile(userId));
     }
 
-    // 2. Current User Info
     @GetMapping("/me/profile")
     public ResponseEntity<UserSummaryDto> getCurrentUserInfo(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(new UserSummaryDto(user.getId(), user.getUsername()));
     }
 
-    // 3. Get Profile Photo (Binary Stream)
     @GetMapping("/{userId}/photo")
     public ResponseEntity<byte[]> getProfilePhoto(@PathVariable Long userId) {
         User user = userRepository.findById(userId)
@@ -70,7 +67,6 @@ public class ProfileController {
                 .body(user.getProfilePic());
     }
 
-    // 4. Update Username
     @PatchMapping("/me/username")
     public ResponseEntity<?> updateUsername(@RequestBody UsernameUpdateRequest data, @AuthenticationPrincipal User user) {
         if (userRepository.existsByUsername(data.getNew_username())) {
@@ -83,7 +79,6 @@ public class ProfileController {
         ));
     }
 
-    // 5. Update Password
     @PatchMapping("/me/password")
     public ResponseEntity<?> updatePassword(@RequestBody PasswordUpdateRequest data, @AuthenticationPrincipal User user) {
         if (!passwordEncoder.matches(data.getOld_password(), user.getPassword())) {
@@ -93,14 +88,12 @@ public class ProfileController {
         return ResponseEntity.ok(Map.of("message", "Password updated"));
     }
 
-    // 6. Update Description
     @PatchMapping("/me/description")
     public ResponseEntity<?> updateDescription(@RequestBody DescriptionUpdateRequest data, @AuthenticationPrincipal User user) {
         userService.updateDescription(user.getId(), data.getDescription());
         return ResponseEntity.ok(Map.of("message", "Description updated"));
     }
 
-    // 7. Update Profile Picture (Multipart)
     @PatchMapping(value = "/me/profile-pic", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateProfilePic(@RequestParam("pic") MultipartFile pic, @AuthenticationPrincipal User user) throws IOException {
         if (pic.isEmpty() || !List.of("image/jpeg", "image/png", "image/webp").contains(pic.getContentType())) {
@@ -110,19 +103,16 @@ public class ProfileController {
         return ResponseEntity.ok(Map.of("message", "Profile picture updated"));
     }
 
-    // 8. Get Followers
     @GetMapping("/{userId}/followers")
     public ResponseEntity<List<UserSummaryDto>> getFollowers(@PathVariable Long userId) {
         return ResponseEntity.ok(profileService.getUserProfile(userId).getFollowers());
     }
 
-    // 9. Get Followed Users
     @GetMapping("/{userId}/followed")
     public ResponseEntity<List<UserSummaryDto>> getFollowed(@PathVariable Long userId) {
         return ResponseEntity.ok(profileService.getUserProfile(userId).getFollowed());
     }
 
-    // 10. Toggle Follow
     @PostMapping("/{userId}/follow")
     public ResponseEntity<?> toggleFollow(@PathVariable Long userId, @AuthenticationPrincipal User user) {
         if (user.getId().equals(userId)) {
@@ -132,7 +122,6 @@ public class ProfileController {
         return ResponseEntity.ok(Map.of("following", following));
     }
 
-    // 11. Check Following Status
     @GetMapping("/{userId}/isfollow")
     public ResponseEntity<?> checkFollowing(@PathVariable Long userId, @AuthenticationPrincipal User user) {
         if (user.getId().equals(userId)) {

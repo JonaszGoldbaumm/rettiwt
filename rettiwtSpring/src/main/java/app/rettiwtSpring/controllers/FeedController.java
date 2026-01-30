@@ -55,8 +55,7 @@ public class FeedController {
     }
     @GetMapping("/user/{userId}")
     public ResponseEntity<FeedResponseDto> getUserPosts(@AuthenticationPrincipal User currUser, @PathVariable Long userId) {
-        // Note: PostService currently has getPostsByUsername, 
-        // you may need to add getPostsByUserId to your Service layer.
+       
         List<Post> posts = postService.getGlobalFeed().stream()
                 .filter(p -> p.getUser().getId().equals(userId))
                 .toList();

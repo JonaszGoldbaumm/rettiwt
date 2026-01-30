@@ -80,7 +80,7 @@ public class PostController {
         }
 
         return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG) // Standardize to JPEG or detect via metadata
+                .contentType(MediaType.IMAGE_JPEG)
                 .body(post.getMedia());
     }
 

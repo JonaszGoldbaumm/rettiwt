@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -37,7 +38,19 @@ public class GlobalExceptionHandler {
         return createResponse(msg, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String,String>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        String msg = String.format(
+            "Invalid value '%s' for parameter '%s'. Expected a number.",
+            ex.getValue(),
+            ex.getName()
+        );
+        return createResponse(msg, HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<Map<String, String>> createResponse(String message, HttpStatus status) {
         return new ResponseEntity<>(Map.of("detail", message), status);
     }
+
+
 }
